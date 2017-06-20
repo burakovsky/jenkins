@@ -1,4 +1,2 @@
-mtn-projects
 ============
-
-Projects for MTN 2017 lab
+Ant and Maven tasks
