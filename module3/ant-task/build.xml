@@ -1,0 +1,64 @@
+<project name="TestProject" default="clean" basedir=".">
+  <property name="src" location="src"/>
+  <property name="lib" location="lib"/>
+  <property name="build" location="build"/>
+  <property name="test" location="test"/>
+  <property name="dist"  location="dist"/>
+  <property name="final"  location="final"/>
+  <property name="src" location="src"/>
+  <property name="report" location="report"/>
+
+   <path id="classpath.test">
+    <pathelement location="${lib}/junit-4.11.jar"/>
+    <pathelement location="${lib}/hamcrest-core-1.3.jar"/>
+    <pathelement location="${build}"/>
+  </path>
+
+  <target name="init">
+    <mkdir dir="${build}"/>
+    <mkdir dir="${dist}"/>
+    <mkdir dir="${final}"/>
+    <mkdir dir="${report}"/>
+    <echo> Creating directory "build" </echo>
+  </target>
+
+  <target name="compile" depends="init" >
+    <javac srcdir="${src}" classpath="${lib}/commons-collections-3.2.1.jar" includeantruntime="false" destdir="${build}"/>
+    <echo> Compiling Project.Class </echo>
+  </target>
+
+  <target name="test-compile" depends="compile" >
+    <javac srcdir="${test}" includeantruntime="false" destdir="${build}">
+       <classpath refid="classpath.test"/>
+    </javac>   
+    <echo> Compiling UnitTest.Class </echo>
+  </target>
+
+  <target name="test" depends="test-compile">
+    <junit printsummary="yes" haltonfailure="yes" fork="true">
+      <classpath>
+        <path refid="classpath.test"/>
+      </classpath>
+      <batchtest>
+       <fileset dir="${test}"/>
+      </batchtest>
+    <formatter type="xml"/>
+    <formatter type="plain" usefile="false"/>
+    </junit>
+  <echo> Testing </echo>
+  </target>
+
+  <target name="dist" depends="test">
+    <jar jarfile="${final}/testProject.jar" basedir="${build}"/>
+    <tar destfile="${final}/TestProject.tar" basedir="${dist}"/>
+    <gzip destfile="${final}/TestProject.tar.gz" src="${final}/TestProject.tar"/>
+  <echo> Creating testProject.jar and TestProject.tar.gz </echo>
+  </target>
+
+   <target name="clean" depends="dist" >
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+    <echo> Deleting folders </echo>
+  </target>
+
+</project>
